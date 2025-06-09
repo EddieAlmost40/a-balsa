@@ -18,7 +18,7 @@
         const createScene = () => {
             const scene = new BABYLON.Scene(engine);
 
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, 20, new BABYLON.Vector3(0, 0, 0), scene);
+            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.25, 70, new BABYLON.Vector3(0, 0, 0), scene);
             camera.attachControl(canvas, true);
 
             const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
@@ -28,8 +28,11 @@
             riverMat.diffuseColor = new BABYLON.Color3(0, 0.5, 1);
             river.material = riverMat;
 
-            const player = BABYLON.MeshBuilder.CreateBox("player", { size: 1 }, scene);
-            player.position = new BABYLON.Vector3(0, 0.5, -47);
+            const player1 = BABYLON.MeshBuilder.CreateBox("player1", { size: 1 }, scene);
+            player1.position = new BABYLON.Vector3(-6, 0.5, -47);
+
+            const player2 = BABYLON.MeshBuilder.CreateBox("player2", { size: 1 }, scene);
+            player2.position = new BABYLON.Vector3(6, 0.5, -47);
 
             const raft = BABYLON.MeshBuilder.CreateBox("raft", { width: 10, height: 0.5, depth: 10 }, scene);
             raft.position = new BABYLON.Vector3(0, 0.5, 30);
@@ -37,8 +40,8 @@
             let pulling = false;
 
             scene.onPointerDown = () => {
-                const direction = raft.position.subtract(player.position).normalize();
-                const ray = new BABYLON.Ray(player.position, direction, 80);
+                const direction = raft.position.subtract(player1.position).normalize();
+                const ray = new BABYLON.Ray(player1.position, direction, 80);
 
                 const hit = ray.intersectsMesh(raft);
                 if (hit.hit) {
@@ -48,9 +51,9 @@
 
             scene.onBeforeRenderObservable.add(() => {
                 if (pulling) {
-                    const toPlayer = player.position.subtract(raft.position);
-                    if (toPlayer.length() > 0.2) {
-                        raft.position.addInPlace(toPlayer.normalize().scale(0.1));
+                    const toPlayer1 = player1.position.subtract(raft.position);
+                    if (toPlayer1.length() > 0.2) {
+                        raft.position.addInPlace(toPlayer1.normalize().scale(0.1));
                     }
                 }
             });
